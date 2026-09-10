@@ -1,0 +1,20 @@
+# Build Intermediate
+dist/
+.validate*/
+node_modules/
+package-lock.json
+
+# Tests
+test/
+test.*
+scripts/
+
+# Prompts
+docs/
+mc.163.com_dev
+nemc-form-script
+prompt.md
+
+# IDE Settings
+.vscode/
+.VSCodeCounter/
