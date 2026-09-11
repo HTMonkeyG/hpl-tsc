@@ -7,10 +7,8 @@ package-lock.json
 # Tests
 test/
 test.*
-scripts/
 
 # Prompts
-docs/
 mc.163.com_dev
 prompt.md
 
