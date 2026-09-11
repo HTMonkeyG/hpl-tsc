@@ -1,5 +1,7 @@
 # hpl-tsc
 
+**本项目的提交记录若无特别标注，均使用AI进行，在部分提交记录中会标注AI模型。**
+
 `hpl-tsc` 将以 HPL 能力为中心的 TypeScript 子集转译为 HPL。TypeScript 提供语法、模块与静态类型前端；编译器负责类型驱动的 HPL ABI 选择、函数/事件注册、优化、命名和文本生成。它不提供 JavaScript 运行时。
 
 ## 语言模型
