@@ -87,9 +87,9 @@ declare namespace hpl {
     /** @hplFunc general.NotifyToClient @hplReturns bool */ function notifyToClient(playerId: string, eventName: string, eventData: HplObject): boolean;
     /** @hplFunc general.NotifyToMultiClients @hplReturns bool */ function notifyToMultiClients(playerIds: slice<string>, eventName: string, eventData: HplObject): boolean;
     /** @hplFunc general.GetMinecraftVersion @hplReturns pointer */ function getMinecraftVersion(): string;
-    /** @hplFunc general.GetPlatform @hplReturns pointer */ function getPlatform(): HplObject;
+    /** @hplFunc general.GetPlatform @hplReturns pointer */ function getPlatform(): int;
     /** @hplFunc general.GetHostPlayerId @hplReturns pointer */ function getHostPlayerId(): string;
-    /** @hplFunc general.GetServerTickTime @hplReturns pointer */ function getServerTickTime(): HplObject;
+    /** @hplFunc general.GetServerTickTime @hplReturns pointer */ function getServerTickTime(): int;
   }
   namespace world {
     /** @hplFunc world.GetPlayerList @hplReturns pointer */ function getPlayerList(): slice<string>;

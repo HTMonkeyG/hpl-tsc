@@ -1,5 +1,5 @@
 import ts from "typescript";
-import { HPL_BOOL, HPL_FLOAT, HPL_INT, HPL_NONE, HPL_STR, type HplSemanticType, mapType, opaqueType, setType, sliceType, unknownType } from "../analysis/types.js";
+import { HPL_BOOL, HPL_FLOAT, HPL_INT, HPL_NONE, HPL_STR, type HplSemanticType, isPrimitiveSemanticType, mapType, opaqueType, setType, sliceType, unknownType } from "../analysis/types.js";
 import { findDeclarationDescriptor } from "../mappings/declarations.js";
 import { getStandardMapping } from "../mappings/standard.js";
 import {
@@ -54,7 +54,15 @@ function directDeclarationCall(context: LoweringContext, node: ts.CallExpression
   if (descriptor.intrinsic === "command") return { kind: "typedCommand", command: args[0] ?? stringExpression("", span(node)), type, effect: "call", span: span(node) };
   if (descriptor.intrinsic === "selector") return { kind: "typedSelector", target: args[0] ?? stringExpression("", span(node)), type, effect: "read", span: span(node) };
   if (descriptor.intrinsic === "score") return { kind: "typedScore", target: args[0] ?? stringExpression("", span(node)), objective: args[1] ?? stringExpression("", span(node)), type, effect: "read", span: span(node) };
-  if (descriptor.hplName) return runtimeCall(descriptor.hplName, args, type, span(node));
+  if (descriptor.hplName) {
+    const call = runtimeCall(descriptor.hplName, args, type, span(node));
+    // Dynamic game APIs return pointers for every result; when the declared
+    // result is a primitive the runtime wraps it with ref(), so hide that
+    // pointer behind an object.deref so callers observe the value itself.
+    return descriptor.result.kind === "ref" && isPrimitiveSemanticType(type)
+      ? runtimeCall("object.deref", [call], type, span(node))
+      : call;
+  }
   return undefined;
 }
 

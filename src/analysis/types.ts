@@ -110,6 +110,10 @@ export function isHplType(value: unknown): value is HplType {
 export function isNumericHplType(type: HplType | HplSemanticType): boolean {
   return typeof type === "string" ? type === "int" || type === "float" : type.kind === "int" || type.kind === "float";
 }
+/** True for the four value types `object.deref` can materialize from a pointer. */
+export function isPrimitiveSemanticType(type: HplSemanticType): boolean {
+  return type.kind === "int" || type.kind === "float" || type.kind === "bool" || type.kind === "str";
+}
 export function hplTypeOf(value: number | boolean | string): HplType {
   if (typeof value === "boolean") return "bool";
   if (typeof value === "string") return "str";
