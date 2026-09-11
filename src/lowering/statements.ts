@@ -77,7 +77,10 @@ function lowerFor(context: LoweringContext, node: ts.ForStatement): TypedStateme
     return [];
   }
   const bound = lowerExpression(context, condition.right);
-  if (bound.type.kind !== "int") report(context, condition.right, 4303, "Canonical for loop bound must be an HPL int");
+  if (bound.type.kind !== "int") {
+    report(context, condition.right, 4303, "Canonical for loop bound must be an HPL int");
+    return [];
+  }
   context.loopDepth++;
   const body = lowerBlock(context, node.statement);
   context.loopDepth--;

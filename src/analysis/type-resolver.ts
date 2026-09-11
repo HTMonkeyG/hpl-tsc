@@ -38,11 +38,108 @@ export class TypeResolver {
   }
 
   public resolveNode(node: ts.Node): HplSemanticType {
-    return this.resolve(this.checker.getTypeAtLocation(node));
+    const type = this.checker.getTypeAtLocation(node);
+    return this.resolveWithProvenance(type, this.typeNodeForNode(node), 0);
   }
 
-  public resolve(type: ts.Type): HplSemanticType {
-    return this.resolveAtDepth(type, 0);
+  public resolve(type: ts.Type, provenance?: ts.TypeNode): HplSemanticType {
+    return this.resolveWithProvenance(type, provenance, 0);
+  }
+
+  public resolveSignatureReturn(signature: ts.Signature): HplSemanticType {
+    return this.resolve(
+      signature.getReturnType(),
+      signature.getDeclaration()?.type,
+    );
+  }
+
+  private resolveWithProvenance(
+    type: ts.Type,
+    provenance: ts.TypeNode | undefined,
+    depth: number,
+  ): HplSemanticType {
+    if (provenance) {
+      const restored = this.resolveTypeNode(provenance, type, depth);
+      if (restored) return restored;
+    }
+    return this.resolveAtDepth(type, depth);
+  }
+
+  private typeNodeForNode(node: ts.Node): ts.TypeNode | undefined {
+    if (ts.isTypeNode(node)) return node;
+    if (ts.isAsExpression(node) || ts.isTypeAssertionExpression(node)) return node.type;
+    if (ts.isCallExpression(node) || ts.isNewExpression(node)) {
+      return this.checker.getResolvedSignature(node)?.getDeclaration()?.type;
+    }
+    const symbol = this.checker.getSymbolAtLocation(
+      ts.isPropertyAccessExpression(node) ? node.name : node,
+    );
+    const declaration = symbol?.valueDeclaration ?? symbol?.declarations?.[0];
+    if (declaration && this.hasTypeNode(declaration)) return declaration.type;
+    if (ts.isVariableDeclaration(node) || ts.isParameter(node) || ts.isPropertyDeclaration(node)
+      || ts.isPropertySignature(node) || ts.isMethodDeclaration(node)
+      || ts.isMethodSignature(node) || ts.isFunctionDeclaration(node)) return node.type;
+    return undefined;
+  }
+
+  private hasTypeNode(node: ts.Node): node is ts.Node & { readonly type: ts.TypeNode } {
+    return "type" in node && (node as { readonly type?: unknown }).type !== undefined;
+  }
+
+  private resolveTypeNode(
+    node: ts.TypeNode,
+    actualType: ts.Type,
+    depth: number,
+  ): HplSemanticType | undefined {
+    if (depth > this.maxDepth) return unknownType("type resolution depth exceeded");
+    if (ts.isParenthesizedTypeNode(node)) return this.resolveTypeNode(node.type, actualType, depth + 1);
+    if (ts.isArrayTypeNode(node)) {
+      return sliceType(this.resolveWithProvenance(this.checker.getTypeFromTypeNode(node.elementType), node.elementType, depth + 1));
+    }
+    if (ts.isTupleTypeNode(node)) {
+      return tupleType(node.elements.map((element) => {
+        const typeNode = ts.isNamedTupleMember(element) ? element.type : element;
+        return this.resolveWithProvenance(this.checker.getTypeFromTypeNode(typeNode), typeNode, depth + 1);
+      }));
+    }
+    if (!ts.isTypeReferenceNode(node)) return undefined;
+    const symbol = this.checker.getSymbolAtLocation(node.typeName);
+    const declaration = symbol?.declarations?.find(ts.isTypeAliasDeclaration);
+    if (declaration && symbol && !this.isHplNamespaceMember(symbol)) {
+      return this.resolveWithProvenance(actualType, declaration.type, depth + 1);
+    }
+    if (!symbol || !this.isHplNamespaceMember(symbol)) return undefined;
+    const name = symbol.getName();
+    if (name === "int") return HPL_INT;
+    if (name === "float") return HPL_FLOAT;
+    const args = node.typeArguments?.map((argument) =>
+      this.resolveWithProvenance(this.checker.getTypeFromTypeNode(argument), argument, depth + 1)) ?? [];
+    if (name === "slice") return sliceType(args[0] ?? unknownType("slice element"));
+    if (name === "map") return mapType(args[0] ?? unknownType("map key"), args[1] ?? unknownType("map value"));
+    if (name === "set") return setType(args[0] ?? unknownType("set element"));
+    if (name === "tuple") {
+      const first = node.typeArguments?.[0];
+      if (first && ts.isTupleTypeNode(first)) {
+        return tupleType(first.elements.map((element) => {
+          const typeNode = ts.isNamedTupleMember(element) ? element.type : element;
+          return this.resolveWithProvenance(this.checker.getTypeFromTypeNode(typeNode), typeNode, depth + 1);
+        }));
+      }
+      const tuple = args[0];
+      return tuple?.kind === "tuple" ? tuple : tupleType([], tuple);
+    }
+    return undefined;
+  }
+
+  private isHplNamespaceMember(symbol: ts.Symbol): boolean {
+    return (symbol.declarations ?? []).some((declaration) => {
+      for (let current: ts.Node | undefined = declaration.parent; current; current = current.parent) {
+        if (ts.isModuleDeclaration(current) && ts.isIdentifier(current.name)) {
+          return current.name.text === "hpl" && current.getSourceFile().isDeclarationFile;
+        }
+      }
+      return false;
+    });
   }
 
   private resolveAtDepth(type: ts.Type, depth: number): HplSemanticType {
@@ -67,9 +164,7 @@ export class TypeResolver {
   }
 
   private resolveNumber(type: ts.Type): HplSemanticType {
-    if (type.isNumberLiteral()) return Number.isInteger(type.value) ? HPL_INT : HPL_FLOAT;
-    const symbolName = type.aliasSymbol?.getName() ?? type.getSymbol()?.getName();
-    return symbolName === "int" || symbolName === "Int" ? HPL_INT : HPL_FLOAT;
+    return type.isNumberLiteral() && Number.isInteger(type.value) ? HPL_INT : HPL_FLOAT;
   }
 
   private resolveUnion(type: ts.UnionType, depth: number): HplSemanticType {
@@ -92,6 +187,15 @@ export class TypeResolver {
     const symbol = type.aliasSymbol ?? type.getSymbol();
     const name = symbol?.getName();
     const arguments_ = this.typeArguments(reference).map((argument) => this.resolveAtDepth(argument, depth + 1));
+    if (symbol && this.isHplNamespaceMember(symbol)) {
+      if (name === "slice") return sliceType(arguments_[0] ?? unknownType("slice element"));
+      if (name === "map") return mapType(arguments_[0] ?? unknownType("map key"), arguments_[1] ?? unknownType("map value"));
+      if (name === "set") return setType(arguments_[0] ?? unknownType("set element"));
+      if (name === "tuple") {
+        const first = arguments_[0];
+        return first?.kind === "tuple" ? first : tupleType([], first);
+      }
+    }
     if (name === "Array" || name === "ReadonlyArray") return sliceType(arguments_[0] ?? unknownType("array element"));
     if (name === "Map" || name === "ReadonlyMap") return mapType(arguments_[0] ?? unknownType("map key"), arguments_[1] ?? unknownType("map value"));
     if (name === "Set" || name === "ReadonlySet") return setType(arguments_[0] ?? unknownType("set element"));

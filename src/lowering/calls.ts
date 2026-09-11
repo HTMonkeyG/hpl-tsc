@@ -1,5 +1,5 @@
 import ts from "typescript";
-import { HPL_BOOL, HPL_FLOAT, HPL_STR, type HplSemanticType } from "../analysis/types.js";
+import { HPL_BOOL, HPL_FLOAT, HPL_INT, HPL_NONE, HPL_STR, type HplSemanticType, mapType, opaqueType, setType, sliceType, unknownType } from "../analysis/types.js";
 import { findDeclarationDescriptor } from "../mappings/declarations.js";
 import { getStandardMapping } from "../mappings/standard.js";
 import {
@@ -10,11 +10,27 @@ import type { TypedExpression } from "../ir/nodes.js";
 import type { LoweringContext } from "./context.js";
 import { report, semanticType, span } from "./context.js";
 import { findIndexedMethod } from "../analysis/declaration-index.js";
-import { containerMemberSource, mapConvention } from "./containers.js";
+import { containerMemberSource, indexedType, mapConvention } from "./containers.js";
 import { lowerExpression } from "./expressions.js";
 
-function descriptorResult(context: LoweringContext, call: ts.CallExpression): HplSemanticType {
-  return semanticType(context, call);
+function descriptorResult(
+  context: LoweringContext,
+  call: ts.CallExpression,
+  result: { readonly kind: string; readonly numberKind?: "int" | "float"; readonly refKind?: string },
+): HplSemanticType {
+  const fallback = semanticType(context, call);
+  if (result.kind === "number") return result.numberKind === "int" ? HPL_INT : HPL_FLOAT;
+  if (result.kind === "boolean") return HPL_BOOL;
+  if (result.kind === "string") return HPL_STR;
+  if (result.kind === "void") return HPL_NONE;
+  if (result.kind === "ref") {
+    if (fallback.kind !== "unknown" && fallback.kind !== "error") return fallback;
+    if (result.refKind === "slice") return sliceType(unknownType("declaration result element"));
+    if (result.refKind === "map") return mapType(unknownType("declaration result key"), unknownType("declaration result value"));
+    if (result.refKind === "set") return setType(unknownType("declaration result element"));
+    return opaqueType(result.refKind ?? "HplObject");
+  }
+  return fallback;
 }
 
 function lowerArguments(context: LoweringContext, args: readonly ts.Expression[]): readonly TypedExpression[] {
@@ -25,7 +41,7 @@ function directDeclarationCall(context: LoweringContext, node: ts.CallExpression
   const descriptor = findDeclarationDescriptor(context.checker, node);
   if (!descriptor) return undefined;
   const args = lowerArguments(context, node.arguments);
-  const type = descriptorResult(context, node);
+  const type = descriptorResult(context, node, descriptor.result);
   if (descriptor.intrinsic === "ref") {
     const first = node.arguments[0];
     if (!first || !ts.isStringLiteralLike(first) || args.length !== 2) {
@@ -103,11 +119,27 @@ export function lowerCall(context: LoweringContext, node: ts.CallExpression): Ty
     const staticSource = staticOwner(owner);
     if (staticSource === "Math" || staticSource === "JSON" || staticSource === "Object") {
       const descriptor = getStandardMapping(staticSource, member);
-      if (descriptor?.hplFunction) return runtimeCall(descriptor.hplFunction, lowerArguments(context, node.arguments), semanticType(context, node), span(node));
+      if (descriptor?.hplFunction) {
+        return runtimeCall(
+          descriptor.hplFunction,
+          lowerArguments(context, node.arguments),
+          descriptorResult(context, node, descriptor.result),
+          span(node),
+        );
+      }
     }
     const ownerType = semanticType(context, owner);
     const operation = operationForMethod(context, node, ownerType, member);
-    if (operation) return runtimeCall(operation, [lowerExpression(context, owner), ...lowerArguments(context, node.arguments)], semanticType(context, node), span(node));
+    if (operation) {
+      const descriptor = containerMemberSource(ownerType)
+        ? getStandardMapping(containerMemberSource(ownerType)!, member)
+        : undefined;
+      const resultType = descriptor?.returnType === "receiver" ? ownerType
+        : descriptor?.returnType === "element" ? indexedType(ownerType) ?? semanticType(context, node)
+        : descriptor ? descriptorResult(context, node, descriptor.result)
+        : semanticType(context, node);
+      return runtimeCall(operation, [lowerExpression(context, owner), ...lowerArguments(context, node.arguments)], resultType, span(node));
+    }
   }
   report(context, node, 4503, "Call expression has no supported HPL declaration or mapping");
   return intExpression(0, span(node));

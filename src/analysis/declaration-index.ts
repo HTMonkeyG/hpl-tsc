@@ -171,7 +171,7 @@ export function buildDeclarationIndex(
           declaration: member,
           symbol,
           parameters,
-          returnType: resolver.resolve(signature.getReturnType()),
+          returnType: resolver.resolveSignatureReturn(signature),
           registeredName,
           ...(event ? { event } : {}),
         };

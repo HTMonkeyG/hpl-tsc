@@ -70,7 +70,22 @@ function lowerBinary(context: LoweringContext, node: ts.BinaryExpression): Typed
   const left = lowerExpression(context, node.left);
   const right = lowerExpression(context, node.right);
   const operator = operators.get(node.operatorToken.kind);
-  if (operator) return { kind: "typedBinary", operator, left, right, type: semanticType(context, node), effect: effectOf(left, right), span: span(node) };
+  if (operator) {
+    const comparison = ["==", "!=", "<", "<=", ">", ">=", "in"].includes(operator);
+    const logical = operator === "and" || operator === "or";
+    const numericType = operator === "/" ? { kind: "float" as const }
+      : left.type.kind === "int" && right.type.kind === "int" ? HPL_INT
+      : semanticType(context, node);
+    return {
+      kind: "typedBinary",
+      operator,
+      left,
+      right,
+      type: comparison || logical ? HPL_BOOL : numericType,
+      effect: effectOf(left, right),
+      span: span(node),
+    };
+  }
   const operation = mappedOperators.get(node.operatorToken.kind);
   if (operation) return runtimeCall(operation, [left, right], semanticType(context, node), span(node));
   report(context, node, 4204, "Unsupported binary expression in value position");
