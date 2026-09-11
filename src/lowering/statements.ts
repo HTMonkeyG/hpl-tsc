@@ -1,7 +1,7 @@
 import ts from "typescript";
 import {
-  assign, block, breakStatement, continueStatement, countFor, expressionStatement,
-  ifBranch, ifStatement, intExpression, returnStatement, runtimeCall,
+  assign, block, boolExpression, breakStatement, continueStatement, countFor,
+  expressionStatement, ifBranch, ifStatement, intExpression, returnStatement, runtimeCall,
 } from "../ir/builders.js";
 import type { TypedExpression, TypedStatement } from "../ir/nodes.js";
 import type { LoweringContext } from "./context.js";
@@ -9,6 +9,8 @@ import { getSymbol, getSymbolId, report, semanticType, span } from "./context.js
 import { lowerExpression } from "./expressions.js";
 import { lowerLValue } from "./lvalues.js";
 import { validateReturnType } from "../analysis/validator.js";
+import { HPL_BOOL } from "../analysis/types.js";
+import { isAssignableTo } from "../analysis/type-operations.js";
 
 function lowerAssignment(context: LoweringContext, node: ts.BinaryExpression): TypedStatement[] | undefined {
   const operator = node.operatorToken.kind;
@@ -25,6 +27,10 @@ function lowerAssignment(context: LoweringContext, node: ts.BinaryExpression): T
     value = { kind: "typedBinary", operator: mapped, left: read, right: value, type: target.kind === "container" ? target.valueType : target.type, effect: read.effect === "pure" && value.effect === "pure" ? "pure" : "read", span: span(node) };
   }
   if (target.kind === "container") return [expressionStatement(runtimeCall(target.operation, [target.object, target.key, value], value.type, span(node), "write"), span(node))];
+  if (!isAssignableTo(value.type, target.type)) {
+    report(context, node.right, 4307, "Assignment value is not assignable to the target HPL type");
+    return [];
+  }
   return [assign(target, value, span(node))];
 }
 
@@ -35,17 +41,29 @@ function lowerVariable(context: LoweringContext, node: ts.VariableStatement): Ty
       report(context, declaration, 4301, "Variables require an identifier and initializer");
       continue;
     }
-    statements.push(assign(
-      { kind: "symbolLValue", symbol: getSymbolId(context, declaration.name), name: declaration.name.text, type: semanticType(context, declaration.name), span: span(declaration.name) },
-      lowerExpression(context, declaration.initializer),
-      span(declaration),
-    ));
+    const target = {
+      kind: "symbolLValue" as const,
+      symbol: getSymbolId(context, declaration.name),
+      name: declaration.name.text,
+      type: semanticType(context, declaration.name),
+      span: span(declaration.name),
+    };
+    const value = lowerExpression(context, declaration.initializer);
+    if (!isAssignableTo(value.type, target.type)) {
+      report(context, declaration.initializer, 4307, "Assignment value is not assignable to the declared HPL type");
+      continue;
+    }
+    statements.push(assign(target, value, span(declaration)));
   }
   return statements;
 }
 
 function lowerIf(context: LoweringContext, node: ts.IfStatement): TypedStatement {
-  const condition = lowerExpression(context, node.expression);
+  let condition = lowerExpression(context, node.expression);
+  if (!isAssignableTo(condition.type, HPL_BOOL)) {
+    report(context, node.expression, 4308, "If condition must be an HPL bool");
+    condition = boolExpression(false, span(node.expression));
+  }
   const thenBody = lowerBlock(context, node.thenStatement);
   const elifs = [];
   let alternate = node.elseStatement;

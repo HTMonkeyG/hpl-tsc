@@ -1,5 +1,6 @@
 import ts from "typescript";
 import { HPL_BOOL, HPL_INT } from "../analysis/types.js";
+import { isAssignableTo } from "../analysis/type-operations.js";
 import {
   boolExpression, floatExpression, intExpression, noneExpression,
   objectExpression, runtimeCall, sliceExpression, stringExpression,
@@ -45,8 +46,12 @@ function lowerArray(context: LoweringContext, node: ts.ArrayLiteralExpression): 
     elements.push(lowerExpression(context, element));
   }
   const type = semanticType(context, node);
-  return type.kind === "slice" ? sliceExpression(elements, type, span(node))
-    : runtimeCall("slices.new", elements, type, span(node));
+  if (type.kind !== "slice") return runtimeCall("slices.new", elements, type, span(node));
+  if (!elements.every((element) => isAssignableTo(element.type, type.element))) {
+    report(context, node, 4206, "Array literal elements must share a single HPL type");
+    return runtimeCall("slices.new", elements, type, span(node));
+  }
+  return sliceExpression(elements, type, span(node));
 }
 
 function lowerObject(context: LoweringContext, node: ts.ObjectLiteralExpression): TypedExpression {

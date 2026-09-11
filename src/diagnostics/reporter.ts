@@ -1,5 +1,5 @@
 import type { Writable } from "node:stream";
-import type { DiagnosticSeverity, HplDiagnostic } from "../types.js";
+import type { DiagnosticSeverity, HplDiagnostic, SourceRange } from "../types.js";
 
 export interface DiagnosticFormatOptions {
   readonly pretty?: boolean;
@@ -35,28 +35,47 @@ function location(diagnostic: HplDiagnostic): string {
   return start === undefined ? file : `${file}:${start.line}:${start.column}`;
 }
 
-function sourceLine(diagnostic: HplDiagnostic): string | undefined {
-  const line = diagnostic.range?.start.line;
-  if (diagnostic.source === undefined || line === undefined) return undefined;
-  return diagnostic.source.split(/\r?\n/u)[line - 1];
+/** How many source lines to show before and after the error span. */
+const CONTEXT_LINES = 2;
+
+function underlineForLine(
+  line: number,
+  range: SourceRange,
+  text: string,
+  gutterWidth: number,
+  color: boolean,
+  severity: DiagnosticSeverity,
+): string | undefined {
+  const { start, end } = range;
+  if (line < start.line || line > end.line) return undefined;
+  const from = line === start.line ? start.column : 1;
+  const to = line === end.line ? end.column : text.length + 1;
+  const caretStart = Math.max(1, from);
+  const caretEnd = Math.max(caretStart + 1, to);
+  const marker = `${" ".repeat(caretStart - 1)}${"^".repeat(caretEnd - caretStart)}`;
+  return `${" ".repeat(gutterWidth)} | ${paint(marker, severityColor[severity], color)}`;
 }
 
 function codeFrame(diagnostic: HplDiagnostic, color: boolean): string[] {
-  const text = sourceLine(diagnostic);
+  const source = diagnostic.source;
   const range = diagnostic.range;
-  if (text === undefined || range === undefined) return [];
+  if (source === undefined || range === undefined) return [];
 
-  const line = range.start.line;
-  const gutter = String(line);
-  const start = Math.max(1, range.start.column);
-  const end = range.end.line === line ? Math.max(start + 1, range.end.column) : start + 1;
-  const marker = `${" ".repeat(start - 1)}${"^".repeat(Math.max(1, end - start))}`;
-  const padding = " ".repeat(gutter.length);
+  const lines = source.split(/\r?\n/u);
+  const startLine = range.start.line;
+  const endLine = range.end.line;
+  const first = Math.max(1, startLine - CONTEXT_LINES);
+  const last = Math.min(lines.length, endLine + CONTEXT_LINES);
+  const gutterWidth = String(last).length;
 
-  return [
-    `${paint(gutter, ANSI.cyan, color)} | ${text}`,
-    `${padding} | ${paint(marker, severityColor[diagnostic.severity], color)}`
-  ];
+  const frame: string[] = [];
+  for (let line = first; line <= last; line++) {
+    const text = lines[line - 1] ?? "";
+    frame.push(`${paint(String(line).padStart(gutterWidth), ANSI.cyan, color)} | ${text}`);
+    const underline = underlineForLine(line, range, text, gutterWidth, color, diagnostic.severity);
+    if (underline !== undefined) frame.push(underline);
+  }
+  return frame;
 }
 
 export function formatDiagnostic(
