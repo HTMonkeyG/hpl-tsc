@@ -45,6 +45,16 @@ interface ItemDict extends hpl.HplObject {
   readonly auxValue?: hpl.int;
   readonly userData?: hpl.HplObject;
 }
+interface PermissionDict extends hpl.HplObject {
+  build: boolean;
+  mine: boolean;
+  doorsandswitches: boolean;
+  opencontainers: boolean;
+  attackplayers: boolean;
+  attackmobs: boolean;
+  op: boolean;
+  teleport: boolean;
+}
 interface BlockObject extends hpl.HplObject {
   readonly blockName?: string;
   readonly auxValue?: hpl.int;
@@ -364,8 +374,8 @@ interface PlayerInteractServerEventArgs { cancel: boolean; playerId: string; ite
 interface PlayerJoinMessageEventArgs { id: string; name: string; cancel: boolean; message: string; }
 interface PlayerLeftMessageServerEventArgs { id: string; name: string; cancel: boolean; message: string; }
 interface PlayerNamedEntityServerEventArgs { playerId: string; entityId: string; preName: string; afterName: string; cancel: boolean; }
-interface PlayerPermissionChangeClientEventArgs { causePlayerId: string; playerId: string; oldPermission: hpl.HplObject; newPermission: hpl.HplObject; changeCause: hpl.int; }
-interface PlayerPermissionChangeServerEventArgs { causePlayerId: string; playerId: string; oldPermission: hpl.HplObject; newPermission: hpl.HplObject; changeCause: hpl.int; cancel: boolean; }
+interface PlayerPermissionChangeClientEventArgs { causePlayerId: string; playerId: string; oldPermission: PermissionDict; newPermission: PermissionDict; changeCause: hpl.int; }
+interface PlayerPermissionChangeServerEventArgs { causePlayerId: string; playerId: string; oldPermission: PermissionDict; newPermission: PermissionDict; changeCause: hpl.int; cancel: boolean; }
 interface PlayerPickupArrowServerEventArgs { playerId: string; arrowId: string; itemDict: ItemDict; cancel: boolean; pickupDelay: hpl.int; }
 interface PlayerRemoveCustomContainerItemClientEventArgs { beforeItemDict: ItemDict; changedItemDict: ItemDict; afterItemDict: ItemDict; collectionName: string; collectionType: string; collectionIndex: hpl.int; x: hpl.int; y: hpl.int; z: hpl.int; }
 interface PlayerRemoveCustomContainerItemServerEventArgs { beforeItemDict: ItemDict; changedItemDict: ItemDict; afterItemDict: ItemDict; collectionName: string; collectionType: string; collectionIndex: hpl.int; playerId: string; x: hpl.int; y: hpl.int; z: hpl.int; }
