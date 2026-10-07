@@ -200,23 +200,15 @@ type ColorCode = string;
 // ----------------------------------------------------------------------------
 
 interface AchievementCompleteEventArgs { playerId: string; rootNodeId: string; achievementId: string; title: string; description: string; }
-interface ActorAcquiredItemClientEventArgs { actor: string; secondaryActor: string; itemDict: ItemDict; acquireMethod: hpl.int; }
 interface ActorAcquiredItemServerEventArgs { actor: string; secondaryActor: string; itemDict: ItemDict; acquireMethod: hpl.int; }
 interface ActorHurtServerEventArgs { entityId: string; cause: string; damage: hpl.float; absorbedDamage: hpl.int; customTag: string; }
-interface ActorUseItemClientEventArgs { playerId: string; itemDict: ItemDict; useMethod: hpl.int; }
 interface ActorUseItemServerEventArgs { playerId: string; itemDict: ItemDict; useMethod: hpl.int; }
 interface ActuallyHurtServerEventArgs { srcId: string; projectileId: string; entityId: string; damage: hpl.float; invulnerableTime: hpl.int; lastHurt: hpl.float; cause: string; customTag: string; }
 interface AddEffectServerEventArgs { entityId: string; effectName: string; effectDuration: hpl.int; effectAmplifier: hpl.int; damage: hpl.float; }
-interface AddEntityClientEventArgs { id: string; posX: hpl.float; posY: hpl.float; posZ: hpl.float; dimensionId: hpl.int; isBaby: boolean; engineTypeStr: string; itemName: string; auxValue: hpl.int; }
 interface AddEntityServerEventArgs { id: string; posX: hpl.float; posY: hpl.float; posZ: hpl.float; dimensionId: hpl.int; isBaby: boolean; engineTypeStr: string; itemName: string; auxValue: hpl.int; }
 interface AddExpEventArgs { id: string; addExp: hpl.int; }
 interface AddLevelEventArgs { id: string; addLevel: hpl.int; newLevel: hpl.int; }
-interface AddPlayerAOIClientEventArgs { playerId: string; }
-interface AddPlayerCreatedClientEventArgs { playerId: string; }
 interface AddServerPlayerEventArgs { id: string; isTransfer: boolean; isReconnect: boolean; isPeUser: boolean; transferParam: string; uid: hpl.int; proxyId: hpl.int; }
-interface AnvilCreateResultItemAfterClientEventArgs { playerId: string; itemShowName: string; itemDict: ItemDict; oldItemDict: ItemDict; materialItemDict: ItemDict; }
-interface ApproachEntityClientEventArgs { playerId: string; entityId: string; }
-interface BlockAnimateRandomTickEventArgs { blockPos: hpl.tuple<readonly [hpl.float, hpl.float, hpl.float]>; blockName: string; auxData: hpl.int; }
 interface BlockDestroyByLiquidServerEventArgs { x: hpl.int; y: hpl.int; z: hpl.int; liquidName: string; blockName: string; auxValue: hpl.int; dimensionId: hpl.int; }
 interface BlockLiquidStateChangeAfterServerEventArgs { blockName: string; auxValue: hpl.int; dimension: hpl.int; x: hpl.int; y: hpl.int; z: hpl.int; turnLiquid: boolean; }
 interface BlockLiquidStateChangeServerEventArgs { blockName: string; auxValue: hpl.int; dimension: hpl.int; x: hpl.int; y: hpl.int; z: hpl.int; turnLiquid: boolean; }
@@ -226,33 +218,22 @@ interface BlockRemoveServerEventArgs { x: hpl.int; y: hpl.int; z: hpl.int; fullN
 interface BlockSnowStateChangeAfterServerEventArgs { dimension: hpl.int; x: hpl.int; y: hpl.int; z: hpl.int; turnSnow: boolean; setBlockType: hpl.int; }
 interface BlockSnowStateChangeServerEventArgs { dimension: hpl.int; x: hpl.int; y: hpl.int; z: hpl.int; turnSnow: boolean; setBlockType: hpl.int; }
 interface BlockStrengthChangedServerEventArgs { posX: hpl.int; posY: hpl.int; posZ: hpl.int; blockName: string; auxValue: hpl.int; newStrength: hpl.int; oldStrength: hpl.int; dimensionId: hpl.int; }
-interface CameraMotionStartClientEventArgs { motionId: hpl.int; }
-interface CameraMotionStopClientEventArgs { motionId: hpl.int; remove: boolean; }
 interface ChangeLevelUpCostServerEventArgs { level: hpl.int; levelUpCostExp: hpl.int; changed: boolean; }
 interface ChangeSwimStateServerEventArgs { entityId: string; formState: boolean; toState: boolean; }
 interface ChestBlockTryPairWithServerEventArgs { cancel: boolean; blockX: hpl.int; blockY: hpl.int; blockZ: hpl.int; otherBlockX: hpl.int; otherBlockY: hpl.int; otherBlockZ: hpl.int; dimensionId: hpl.int; }
-interface ChunkAcquireDiscardedClientEventArgs { dimension: hpl.int; chunkPosX: hpl.int; chunkPosZ: hpl.int; }
 interface ChunkAcquireDiscardedServerEventArgs { dimension: hpl.int; chunkPosX: hpl.int; chunkPosZ: hpl.int; entities: hpl.slice<string>; blockEntities: hpl.slice<hpl.HplObject>; }
 interface ChunkGeneratedServerEventArgs { dimension: hpl.int; chunkPosX: hpl.int; chunkPosZ: hpl.int; blockEntityData: hpl.slice<hpl.HplObject>; }
-interface ChunkLoadedClientEventArgs { dimension: hpl.int; chunkPosX: hpl.int; chunkPosZ: hpl.int; }
 interface ChunkLoadedServerEventArgs { dimension: hpl.int; chunkPosX: hpl.int; chunkPosZ: hpl.int; blockEntities: hpl.slice<hpl.HplObject>; }
-interface ClientBlockUseEventArgs { playerId: string; blockName: string; aux: hpl.int; cancel: boolean; x: hpl.int; y: hpl.int; z: hpl.int; clickX: hpl.float; clickY: hpl.float; clickZ: hpl.float; }
-interface ClientItemTryUseEventArgs { playerId: string; itemDict: ItemDict; cancel: boolean; }
-interface ClientItemUseOnEventArgs { entityId: string; itemDict: ItemDict; x: hpl.int; y: hpl.int; z: hpl.int; blockName: string; blockAuxValue: hpl.int; face: hpl.int; clickX: hpl.float; clickY: hpl.float; clickZ: hpl.float; ret: boolean; }
 interface ClientLoadAddonsFinishServerEventArgs { playerId: string; }
-interface ClientShapedRecipeTriggeredEventArgs { recipeId: string; }
 interface CommandBlockContainerOpenEventArgs { playerId: string; isBlock: boolean; blockX: hpl.int; blockY: hpl.int; blockZ: hpl.int; victimId: string; cancel: boolean; }
 interface CommandBlockUpdateEventArgs { playerId: string; playerUid: hpl.int; command: string; isBlock: boolean; blockX: hpl.int; blockY: hpl.int; blockZ: hpl.int; victimId: string; cancel: boolean; }
 interface CommandEventArgs { entityId: string; command: string; cancel: boolean; }
 interface ContainerItemChangedServerEventArgs { pos: hpl.tuple<readonly [hpl.int, hpl.int, hpl.int]>; containerType: hpl.int; slot: hpl.int; dimensionId: hpl.int; oldItemDict: ItemDict; newItemDict: ItemDict; }
 interface CraftItemOutputChangeServerEventArgs { playerId: string; itemDict: ItemDict; screenContainerType: hpl.int; cancel: boolean; }
-interface CraftUpdateResultItemClientEventArgs { playerId: string; itemDict: ItemDict; }
 interface CustomCommandTriggerServerEventArgs { command: string; args: hpl.slice<hpl.HplObject>; variant: hpl.int; origin: hpl.HplObject; return_failed: boolean; return_msg_key: string; }
 interface DamageEventArgs { srcId: string; projectileId: string; entityId: string; damage: hpl.float; absorption: hpl.int; cause: string; knock: boolean; ignite: boolean; customTag: string; }
 interface DelServerPlayerEventArgs { id: string; isTransfer: boolean; uid: hpl.int; }
 interface DestroyBlockEventArgs { x: hpl.int; y: hpl.int; z: hpl.int; face: hpl.int; fullName: string; auxData: hpl.int; playerId: string; dimensionId: hpl.int; dropEntityIds: hpl.slice<string>; }
-interface DimensionChangeClientEventArgs { playerId: string; fromDimensionId: hpl.int; toDimensionId: hpl.int; fromX: hpl.float; fromY: hpl.float; fromZ: hpl.float; toX: hpl.float; toY: hpl.float; toZ: hpl.float; }
-interface DimensionChangeFinishClientEventArgs { playerId: string; fromDimensionId: hpl.int; toDimensionId: hpl.int; toPos: hpl.tuple<readonly [hpl.float, hpl.float, hpl.float]>; }
 interface DimensionChangeFinishServerEventArgs { playerId: string; fromDimensionId: hpl.int; toDimensionId: hpl.int; toPos: hpl.tuple<readonly [hpl.float, hpl.float, hpl.float]>; }
 interface DimensionChangeServerEventArgs { playerId: string; fromDimensionId: hpl.int; toDimensionId: hpl.int; fromX: hpl.float; fromY: hpl.float; fromZ: hpl.float; toX: hpl.float; toY: hpl.float; toZ: hpl.float; }
 interface DirtBlockToGrassBlockServerEventArgs { dimension: hpl.int; x: hpl.int; y: hpl.int; z: hpl.int; }
@@ -263,102 +244,70 @@ interface EntityDieLoottableServerEventArgs { dieEntityId: string; attacker: str
 interface EntityDroppedItemServerEventArgs { entityId: string; itemDict: ItemDict; itemEntityId: string; }
 interface EntityEffectDamageServerEventArgs { entityId: string; damage: hpl.float; attributeBuffType: hpl.int; duration: hpl.float; lifeTimer: hpl.float; isInstantaneous: boolean; cause: string; }
 interface EntityLoadScriptEventArgs { args: hpl.slice<hpl.HplObject>; }
-interface EntityModelChangedClientEventArgs { entityId: string; newModel: string; oldModel: string; }
 interface EntityMotionStartServerEventArgs { motionId: hpl.int; entityId: string; }
 interface EntityMotionStopServerEventArgs { motionId: hpl.int; entityId: string; remove: boolean; }
 interface EntityPickupItemServerEventArgs { entityId: string; itemDict: ItemDict; secondaryActor: string; }
 interface EntityPlaceBlockAfterServerEventArgs { x: hpl.int; y: hpl.int; z: hpl.int; fullName: string; auxData: hpl.int; entityId: string; dimensionId: hpl.int; face: hpl.int; }
 interface EntityRemoveEventArgs { id: string; }
 interface EntityStartRidingEventArgs { id: string; rideId: string; }
-interface EntityStopRidingEventArgs { id: string; rideId: string; exitFromRider: boolean; entityIsBeingDestroyed: boolean; switchingRides: boolean; cancel: boolean; }
 interface EntityTickServerEventArgs { entityId: string; identifier: string; }
 interface ExplosionServerEventArgs { blocks: hpl.slice<hpl.HplObject>; victims: hpl.slice<hpl.HplObject>; sourceId: string; explodePos: hpl.slice<hpl.HplObject>; dimensionId: hpl.int; }
-interface ExtinguishFireClientEventArgs { pos: hpl.tuple<readonly [hpl.float, hpl.float, hpl.float]>; playerId: string; cancel: boolean; }
 interface ExtinguishFireServerEventArgs { pos: hpl.tuple<readonly [hpl.float, hpl.float, hpl.float]>; playerId: string; cancel: boolean; }
 interface FallingBlockBreakServerEventArgs { fallingBlockId: string; fallingBlockX: hpl.float; fallingBlockY: hpl.float; fallingBlockZ: hpl.float; blockName: string; fallTickAmount: hpl.int; dimensionId: hpl.int; cancelDrop: boolean; }
-interface FallingBlockCauseDamageBeforeClientEventArgs { fallingBlockId: hpl.int; fallingBlockX: hpl.float; fallingBlockY: hpl.float; fallingBlockZ: hpl.float; blockName: string; dimensionId: hpl.int; collidingEntitys: hpl.slice<string>; fallTickAmount: hpl.int; fallDistance: hpl.float; isHarmful: boolean; fallDamage: hpl.int; }
 interface FallingBlockCauseDamageBeforeServerEventArgs { fallingBlockId: string; fallingBlockX: hpl.float; fallingBlockY: hpl.float; fallingBlockZ: hpl.float; blockName: string; dimensionId: hpl.int; collidingEntitys: hpl.slice<string>; fallTickAmount: hpl.int; fallDistance: hpl.float; isHarmful: boolean; fallDamage: hpl.int; }
 interface FallingBlockReturnHeavyBlockServerEventArgs { fallingBlockId: hpl.int; blockX: hpl.int; blockY: hpl.int; blockZ: hpl.int; heavyBlockName: string; prevHereBlockName: string; dimensionId: hpl.int; fallTickAmount: hpl.int; }
 interface FarmBlockToDirtBlockServerEventArgs { dimension: hpl.int; x: hpl.int; y: hpl.int; z: hpl.int; setBlockType: hpl.int; }
 interface FurnaceBurnFinishedServerEventArgs { dimensionId: hpl.int; posX: hpl.float; posY: hpl.float; posZ: hpl.float; itemDict: ItemDict; }
-interface GameRenderTickEventArgs extends hpl.HplObject {}
-interface GameTypeChangedClientEventArgs { playerId: string; oldGameType: hpl.int; newGameType: hpl.int; }
 interface GameTypeChangedServerEventArgs { playerId: string; oldGameType: hpl.int; newGameType: hpl.int; }
 interface GlobalCommandServerEventArgs { entityId: string; command: string; blockPos: hpl.tuple<readonly [hpl.int, hpl.int, hpl.int]>; dimension: hpl.int; cancel: boolean; }
 interface GrassBlockToDirtBlockServerEventArgs { dimension: hpl.int; x: hpl.int; y: hpl.int; z: hpl.int; }
-interface GrindStoneRemovedEnchantClientEventArgs { playerId: string; oldItemDict: ItemDict; additionalItemDict: ItemDict; newItemDict: ItemDict; exp: hpl.int; }
 interface HealthChangeBeforeServerEventArgs { entityId: string; from: hpl.float; to: hpl.float; byScript: boolean; cancel: boolean; }
-interface HealthChangeClientEventArgs { entityId: string; from: hpl.float; to: hpl.float; }
 interface HealthChangeServerEventArgs { entityId: string; from: hpl.float; to: hpl.float; byScript: boolean; }
 interface HeavyBlockStartFallingServerEventArgs { fallingBlockId: string; blockX: hpl.int; blockY: hpl.int; blockZ: hpl.int; blockName: string; dimensionId: hpl.int; }
 interface HopperTryPullInServerEventArgs { x: hpl.int; y: hpl.int; z: hpl.int; abovePosX: hpl.int; abovePosY: hpl.int; abovePosZ: hpl.int; dimensionId: hpl.int; canHopper: boolean; }
 interface HopperTryPullOutServerEventArgs { x: hpl.int; y: hpl.int; z: hpl.int; attachedPosX: hpl.int; attachedPosY: hpl.int; attachedPosZ: hpl.int; dimensionId: hpl.int; canHopper: boolean; }
-interface InventoryItemChangedClientEventArgs { playerId: string; slot: hpl.int; oldItemDict: ItemDict; newItemDict: ItemDict; }
 interface InventoryItemChangedServerEventArgs { playerId: string; slot: hpl.int; oldItemDict: ItemDict; newItemDict: ItemDict; }
 interface ItemDurabilityChangedServerEventArgs { entityId: string; itemDict: ItemDict; durabilityBefore: hpl.int; durability: hpl.int; canChange: boolean; }
 interface ItemPullOutCustomContainerServerEventArgs { itemDict: ItemDict; collectionName: string; collectionIndex: hpl.int; x: hpl.int; y: hpl.int; z: hpl.int; dimension: hpl.int; cancel: boolean; }
 interface ItemPushInCustomContainerServerEventArgs { itemDict: ItemDict; collectionName: string; collectionIndex: hpl.int; x: hpl.int; y: hpl.int; z: hpl.int; dimension: hpl.int; cancel: boolean; }
-interface ItemReleaseUsingClientEventArgs { playerId: string; durationLeft: hpl.float; itemDict: ItemDict; maxUseDuration: hpl.int; cancel: boolean; }
 interface ItemReleaseUsingServerEventArgs { playerId: string; durationLeft: hpl.float; itemDict: ItemDict; maxUseDuration: hpl.int; cancel: boolean; changeItem: boolean; }
 interface ItemUseAfterServerEventArgs { entityId: string; itemDict: ItemDict; }
 interface ItemUseOnAfterServerEventArgs { entityId: string; itemDict: ItemDict; x: hpl.int; y: hpl.int; z: hpl.int; face: hpl.int; clickX: hpl.float; clickY: hpl.float; clickZ: hpl.float; blockName: string; blockAuxValue: hpl.int; dimensionId: hpl.int; }
-interface LeaveEntityClientEventArgs { playerId: string; entityId: string; }
-interface LiquidClippedClientEventArgs { playerId: string; blockName: string; aux: hpl.int; blockPos: hpl.tuple<readonly [hpl.int, hpl.int, hpl.int]>; dimensionId: hpl.int; floatPos: hpl.tuple<readonly [hpl.float, hpl.float, hpl.float]>; }
 interface LiquidClippedServerEventArgs { playerId: string; blockName: string; aux: hpl.int; blockPos: hpl.tuple<readonly [hpl.int, hpl.int, hpl.int]>; dimensionId: hpl.int; floatPos: hpl.tuple<readonly [hpl.float, hpl.float, hpl.float]>; }
-interface LoadClientAddonScriptsAfterEventArgs extends hpl.HplObject {}
 interface LoadServerAddonScriptsAfterEventArgs extends hpl.HplObject {}
 interface MobDieEventArgs { id: string; attacker: string; cause: string; customTag: string; }
 interface MobGriefingBlockServerEventArgs { cancel: boolean; blockX: hpl.int; blockY: hpl.int; blockZ: hpl.int; entityId: string; blockName: string; dimensionId: hpl.int; }
-interface ModBlockEntityLoadedClientEventArgs { posX: hpl.int; posY: hpl.int; posZ: hpl.int; dimensionId: hpl.int; blockName: string; }
-interface ModBlockEntityRemoveClientEventArgs { posX: hpl.int; posY: hpl.int; posZ: hpl.int; dimensionId: hpl.int; blockName: string; }
-interface ModBlockEntityTickClientEventArgs { posX: hpl.int; posY: hpl.int; posZ: hpl.int; dimensionId: hpl.int; blockName: string; }
 interface MountTamingEventArgs { eid: string; pid: string; }
 interface NewOnEntityAreaEventArgs { name: string; enteredEntities: hpl.slice<string>; leftEntities: hpl.slice<string>; }
-interface OnAfterFallOnBlockClientEventArgs { entityId: string; posX: hpl.float; posY: hpl.float; posZ: hpl.float; motionX: hpl.float; motionY: hpl.float; motionZ: hpl.float; blockName: string; calculate: boolean; }
 interface OnAfterFallOnBlockServerEventArgs { entityId: string; posX: hpl.float; posY: hpl.float; posZ: hpl.float; motionX: hpl.float; motionY: hpl.float; motionZ: hpl.float; blockName: string; calculate: boolean; }
 interface OnBeforeFallOnBlockServerEventArgs { entityId: string; blockX: hpl.int; blockY: hpl.int; blockZ: hpl.int; blockName: string; fallDistance: hpl.float; cancel: boolean; }
-interface OnCarriedNewItemChangedClientEventArgs { itemDict: ItemDict; }
 interface OnCarriedNewItemChangedServerEventArgs { oldItemDict: ItemDict; newItemDict: ItemDict; playerId: string; }
-interface OnCommandOutputClientEventArgs { command: string; message: string; }
 interface OnCommandOutputServerEventArgs { command: string; message: string; }
 interface OnContainerFillLoottableServerEventArgs { loottable: string; playerId: string; itemList: hpl.slice<ItemDict>; dirty: boolean; }
-interface OnEntityInsideBlockClientEventArgs { entityId: string; dimensionId: hpl.int; slowdownMultiX: hpl.float; slowdownMultiY: hpl.float; slowdownMultiZ: hpl.float; blockX: hpl.int; blockY: hpl.int; blockZ: hpl.int; blockName: string; cancel: boolean; }
 interface OnEntityInsideBlockServerEventArgs { entityId: string; slowdownMultiX: hpl.float; slowdownMultiY: hpl.float; slowdownMultiZ: hpl.float; blockX: hpl.int; blockY: hpl.int; blockZ: hpl.int; blockName: string; cancel: boolean; }
 interface OnFireHurtEventArgs { victim: string; src: string; fireTime: hpl.float; cancel: boolean; cancelIgnite: boolean; }
-interface OnGroundClientEventArgs { id: string; }
 interface OnGroundServerEventArgs { id: string; }
 interface OnItemPutInEnchantingModelServerEventArgs { playerId: string; slotType: hpl.int; options: hpl.slice<hpl.HplObject>; change: boolean; }
 interface OnKnockBackServerEventArgs { id: string; }
 interface OnLightningLevelChangeServerEventArgs { oldLevel: hpl.float; newLevel: hpl.float; }
 interface OnLocalLightningLevelChangeServerEventArgs { oldLevel: hpl.float; newLevel: hpl.float; dimensionId: hpl.int; }
-interface OnLocalPlayerActionClientEventArgs { actionType: hpl.int; }
-interface OnLocalPlayerStartJumpClientEventArgs extends hpl.HplObject {}
-interface OnLocalPlayerStopLoadingEventArgs { playerId: string; }
 interface OnLocalRainLevelChangeServerEventArgs { oldLevel: hpl.float; newLevel: hpl.float; dimensionId: hpl.int; }
 interface OnMobHitBlockServerEventArgs { entityId: string; posX: hpl.int; posY: hpl.int; posZ: hpl.int; blockId: string; auxValue: hpl.int; dimensionId: hpl.int; }
-interface OnMobHitMobClientEventArgs { mobId: string; hittedMobList: hpl.slice<string>; }
 interface OnMobHitMobServerEventArgs { mobId: string; hittedMobList: hpl.slice<string>; }
-interface OnModBlockNeteaseEffectCreatedClientEventArgs { effectName: string; id: hpl.int; effectType: hpl.int; blockPos: hpl.tuple<readonly [hpl.float, hpl.float, hpl.float]>; }
 interface OnNewArmorExchangeServerEventArgs { slot: hpl.int; oldArmorDict: hpl.HplObject; newArmorDict: hpl.HplObject; playerId: string; }
 interface OnOffhandItemChangedServerEventArgs { oldItemDict: ItemDict; newItemDict: ItemDict; playerId: string; }
 interface OnPlayerActionServerEventArgs { playerId: string; actionType: hpl.int; }
 interface OnPlayerActiveShieldServerEventArgs { playerId: string; isActive: boolean; itemDict: ItemDict; cancelable: boolean; cancel: boolean; }
 interface OnPlayerBlockedByShieldAfterServerEventArgs { playerId: string; sourceId: string; itemDict: ItemDict; damage: hpl.float; }
 interface OnPlayerBlockedByShieldBeforeServerEventArgs { playerId: string; sourceId: string; itemDict: ItemDict; damage: hpl.float; }
-interface OnPlayerHitBlockClientEventArgs { playerId: string; posX: hpl.int; posY: hpl.int; posZ: hpl.int; blockId: string; auxValue: hpl.int; }
 interface OnPlayerHitBlockServerEventArgs { playerId: string; posX: hpl.int; posY: hpl.int; posZ: hpl.int; blockId: string; auxValue: hpl.int; dimensionId: hpl.int; }
 interface OnRainLevelChangeServerEventArgs { oldLevel: hpl.float; newLevel: hpl.float; }
-interface OnScriptTickClientEventArgs extends hpl.HplObject {}
 interface OnScriptTickServerEventArgs extends hpl.HplObject {}
-interface OnStandOnBlockClientEventArgs { entityId: string; dimensionId: hpl.int; posX: hpl.float; posY: hpl.float; posZ: hpl.float; motionX: hpl.float; motionY: hpl.float; motionZ: hpl.float; blockX: hpl.int; blockY: hpl.int; blockZ: hpl.int; blockName: string; cancel: boolean; }
 interface OnStandOnBlockServerEventArgs { entityId: string; dimensionId: hpl.int; posX: hpl.float; posY: hpl.float; posZ: hpl.float; motionX: hpl.float; motionY: hpl.float; motionZ: hpl.float; blockX: hpl.int; blockY: hpl.int; blockZ: hpl.int; blockName: string; cancel: boolean; }
-interface PerspChangeClientEventArgs { from: hpl.int; to: hpl.int; }
 interface PistonActionServerEventArgs { cancel: boolean; action: string; pistonFacing: hpl.int; pistonMoveFacing: hpl.int; dimensionId: hpl.int; pistonX: hpl.int; pistonY: hpl.int; pistonZ: hpl.int; blockList: hpl.slice<hpl.HplObject>; breakBlockList: hpl.slice<hpl.HplObject>; entityList: hpl.slice<string>; }
 interface PlaceNeteaseLargeFeatureServerEventArgs { dimensionId: hpl.int; pos: hpl.HplObject; rot: hpl.int; depth: hpl.int; centerPool: string; ignoreFitInContext: boolean; cancel: boolean; }
 interface PlaceNeteaseStructureFeatureEventArgs { structureName: string; x: hpl.int; y: hpl.int; z: hpl.int; biomeType: hpl.int; biomeName: string; dimensionId: hpl.int; cancel: boolean; }
-interface PlayerAddCustomContainerItemClientEventArgs { beforeItemDict: ItemDict; changedItemDict: ItemDict; afterItemDict: ItemDict; collectionName: string; collectionType: string; collectionIndex: hpl.int; x: hpl.int; y: hpl.int; z: hpl.int; }
 interface PlayerAddCustomContainerItemServerEventArgs { beforeItemDict: ItemDict; changedItemDict: ItemDict; afterItemDict: ItemDict; collectionName: string; collectionType: string; collectionIndex: hpl.int; playerId: string; x: hpl.int; y: hpl.int; z: hpl.int; }
-interface PlayerAttackEntityEventArgs { playerId: string; victimId: string; damage: hpl.float; isValid: hpl.int; cancel: boolean; isKnockBack: boolean; isCrit: boolean; }
 interface PlayerCheatSpinAttackServerEventArgs { playerId: string; isStart: boolean; }
 interface PlayerDieEventArgs { id: string; attacker: string; customTag: string; cause: string; }
 interface PlayerDoInteractServerEventArgs { playerId: string; itemDict: ItemDict; interactEntityId: string; }
@@ -374,10 +323,8 @@ interface PlayerInteractServerEventArgs { cancel: boolean; playerId: string; ite
 interface PlayerJoinMessageEventArgs { id: string; name: string; cancel: boolean; message: string; }
 interface PlayerLeftMessageServerEventArgs { id: string; name: string; cancel: boolean; message: string; }
 interface PlayerNamedEntityServerEventArgs { playerId: string; entityId: string; preName: string; afterName: string; cancel: boolean; }
-interface PlayerPermissionChangeClientEventArgs { causePlayerId: string; playerId: string; oldPermission: PermissionDict; newPermission: PermissionDict; changeCause: hpl.int; }
 interface PlayerPermissionChangeServerEventArgs { causePlayerId: string; playerId: string; oldPermission: PermissionDict; newPermission: PermissionDict; changeCause: hpl.int; cancel: boolean; }
 interface PlayerPickupArrowServerEventArgs { playerId: string; arrowId: string; itemDict: ItemDict; cancel: boolean; pickupDelay: hpl.int; }
-interface PlayerRemoveCustomContainerItemClientEventArgs { beforeItemDict: ItemDict; changedItemDict: ItemDict; afterItemDict: ItemDict; collectionName: string; collectionType: string; collectionIndex: hpl.int; x: hpl.int; y: hpl.int; z: hpl.int; }
 interface PlayerRemoveCustomContainerItemServerEventArgs { beforeItemDict: ItemDict; changedItemDict: ItemDict; afterItemDict: ItemDict; collectionName: string; collectionType: string; collectionIndex: hpl.int; playerId: string; x: hpl.int; y: hpl.int; z: hpl.int; }
 interface PlayerRespawnEventArgs { id: string; }
 interface PlayerRespawnFinishServerEventArgs { playerId: string; }
@@ -386,21 +333,14 @@ interface PlayerSpinAttackServerEventArgs { playerId: string; isInWaterOrRain: b
 interface PlayerStartFishingServerEventArgs { playerId: string; hookEntity: string; itemDict: ItemDict; cancel: boolean; }
 interface PlayerStopSleepServerEventArgs { playerId: string; fullName: string; auxData: hpl.int; dimensionid: hpl.int; x: hpl.int; y: hpl.int; z: hpl.int; }
 interface PlayerTeleportEventArgs { id: string; }
-interface PlayerTryAddCustomContainerItemClientEventArgs { itemDict: ItemDict; collectionName: string; collectionType: string; collectionIndex: hpl.int; x: hpl.int; y: hpl.int; z: hpl.int; cancel: boolean; }
 interface PlayerTryAddCustomContainerItemServerEventArgs { itemDict: ItemDict; collectionName: string; collectionType: string; collectionIndex: hpl.int; playerId: string; x: hpl.int; y: hpl.int; z: hpl.int; }
-interface PlayerTryDestroyBlockClientEventArgs { x: hpl.int; y: hpl.int; z: hpl.int; face: hpl.int; blockName: string; auxData: hpl.int; playerId: string; cancel: boolean; }
-interface PlayerTryDropItemClientEventArgs { playerId: string; itemDict: ItemDict; cancel: boolean; }
-interface PlayerTryPutCustomContainerItemClientEventArgs { itemDict: ItemDict; collectionName: string; collectionType: string; collectionIndex: hpl.int; x: hpl.int; y: hpl.int; z: hpl.int; cancel: boolean; }
 interface PlayerTryPutCustomContainerItemServerEventArgs { itemDict: ItemDict; collectionName: string; collectionType: string; collectionIndex: hpl.int; playerId: string; x: hpl.int; y: hpl.int; z: hpl.int; cancel: boolean; }
-interface PlayerTryRemoveCustomContainerItemClientEventArgs { itemDict: ItemDict; collectionName: string; collectionType: string; collectionIndex: hpl.int; x: hpl.int; y: hpl.int; z: hpl.int; cancel: boolean; }
 interface PlayerTryRemoveCustomContainerItemServerEventArgs { itemDict: ItemDict; collectionName: string; collectionType: string; collectionIndex: hpl.int; playerId: string; x: hpl.int; y: hpl.int; z: hpl.int; }
 interface PlayerTrySleepServerEventArgs { playerId: string; cancel: boolean; }
 interface ProjectileCritHitEventArgs { id: string; targetId: string; }
 interface ProjectileDoHitEffectEventArgs { id: string; hitTargetType: string; targetId: string; hitFace: hpl.int; x: hpl.float; y: hpl.float; z: hpl.float; blockPosX: hpl.int; blockPosY: hpl.int; blockPosZ: hpl.int; srcId: string; cancel: boolean; }
 interface RefreshEffectServerEventArgs { entityId: string; effectName: string; effectDuration: hpl.int; effectAmplifier: hpl.int; damage: hpl.float; }
 interface RemoveEffectServerEventArgs { entityId: string; effectName: string; effectDuration: hpl.int; effectAmplifier: hpl.int; }
-interface RemoveEntityClientEventArgs { id: string; }
-interface RemovePlayerAOIClientEventArgs { playerId: string; }
 interface ServerBlockEntityTickEventArgs { blockName: string; dimension: hpl.int; posX: hpl.int; posY: hpl.int; posZ: hpl.int; }
 interface ServerBlockUseEventArgs { playerId: string; blockName: string; aux: hpl.int; cancel: boolean; x: hpl.int; y: hpl.int; z: hpl.int; clickX: hpl.float; clickY: hpl.float; clickZ: hpl.float; face: hpl.int; itemDict: ItemDict; dimensionId: hpl.int; }
 interface ServerChatEventArgs { username: string; playerId: string; message: string; cancel: boolean; bChatById: boolean; bForbid: boolean; toPlayerIds: hpl.slice<string>; gameChatPrefix: string; gameChatPrefixColorR: hpl.float; gameChatPrefixColorG: hpl.float; gameChatPrefixColorB: hpl.float; }
@@ -414,46 +354,29 @@ interface ServerPlayerTryTouchEventArgs { playerId: string; entityId: string; it
 interface ServerPostBlockPatternEventArgs { entityId: string; entityGenerated: string; x: hpl.int; y: hpl.int; z: hpl.int; dimensionId: hpl.int; }
 interface ServerPreBlockPatternEventArgs { enable: boolean; x: hpl.int; y: hpl.int; z: hpl.int; dimensionId: hpl.int; entityWillBeGenerated: string; }
 interface ServerSpawnMobEventArgs { entityId: string; identifier: string; type: hpl.int; baby: boolean; x: hpl.float; y: hpl.float; z: hpl.float; dimensionId: hpl.int; realIdentifier: string; cancel: boolean; }
-interface ShearsDestoryBlockBeforeClientEventArgs { blockX: hpl.int; blockY: hpl.int; blockZ: hpl.int; blockName: string; auxData: hpl.int; dropName: string; dropCount: hpl.int; playerId: string; dimensionId: hpl.int; cancelShears: boolean; }
 interface ShearsDestoryBlockBeforeServerEventArgs { blockX: hpl.int; blockY: hpl.int; blockZ: hpl.int; blockName: string; auxData: hpl.int; dropName: string; dropCount: hpl.int; playerId: string; dimensionId: hpl.int; cancelShears: boolean; }
 interface ShearsUseToBlockBeforeServerEventArgs { blockX: hpl.int; blockY: hpl.int; blockZ: hpl.int; blockName: string; auxData: hpl.int; dropName: string; dropCount: hpl.int; entityId: string; dimensionId: hpl.int; cancelShears: boolean; }
 interface SpawnProjectileServerEventArgs { projectileId: string; projectileIdentifier: string; spawnerId: string; }
-interface StartDestroyBlockClientEventArgs { pos: hpl.tuple<readonly [hpl.float, hpl.float, hpl.float]>; blockName: string; auxValue: hpl.int; playerId: string; cancel: boolean; face: hpl.int; }
 interface StartDestroyBlockServerEventArgs { pos: hpl.tuple<readonly [hpl.float, hpl.float, hpl.float]>; blockName: string; auxValue: hpl.int; playerId: string; dimensionId: hpl.int; cancel: boolean; face: hpl.int; }
-interface StartRidingClientEventArgs { actorId: string; victimId: string; }
 interface StartRidingServerEventArgs { cancel: boolean; actorId: string; victimId: string; }
-interface StartUsingItemClientEventArgs { playerId: string; itemDict: ItemDict; }
-interface StepOffBlockClientEventArgs { blockX: hpl.int; blockY: hpl.int; blockZ: hpl.int; entityId: string; blockName: string; dimensionId: hpl.int; }
 interface StepOffBlockServerEventArgs { blockX: hpl.int; blockY: hpl.int; blockZ: hpl.int; entityId: string; blockName: string; dimensionId: hpl.int; }
-interface StepOnBlockClientEventArgs { cancel: boolean; blockX: hpl.int; blockY: hpl.int; blockZ: hpl.int; entityId: string; blockName: string; dimensionId: hpl.int; }
 interface StepOnBlockServerEventArgs { cancel: boolean; blockX: hpl.int; blockY: hpl.int; blockZ: hpl.int; entityId: string; blockName: string; dimensionId: hpl.int; }
-interface StopUsingItemClientEventArgs { playerId: string; itemDict: ItemDict; }
 interface StoreBuySuccServerEventArgs { playerId: string; }
 interface UIContainerItemChangedServerEventArgs { playerId: string; slot: hpl.int; oldItemDict: ItemDict; newItemDict: ItemDict; }
-interface UnLoadClientAddonScriptsBeforeEventArgs extends hpl.HplObject {}
-interface UpdatePlayerSkinClientEventArgs { playerId: string; }
 interface WillAddEffectServerEventArgs { entityId: string; effectName: string; effectDuration: hpl.int; effectAmplifier: hpl.int; cancel: boolean; damage: hpl.float; }
 interface WillTeleportToServerEventArgs { cancel: boolean; entityId: string; fromDimensionId: hpl.int; toDimensionId: hpl.int; fromX: hpl.int; fromY: hpl.int; fromZ: hpl.int; toX: hpl.int; toY: hpl.int; toZ: hpl.int; cause: string; }
 
 interface EventNameArgs {
   AchievementCompleteEvent: AchievementCompleteEventArgs;
-  ActorAcquiredItemClientEvent: ActorAcquiredItemClientEventArgs;
   ActorAcquiredItemServerEvent: ActorAcquiredItemServerEventArgs;
   ActorHurtServerEvent: ActorHurtServerEventArgs;
-  ActorUseItemClientEvent: ActorUseItemClientEventArgs;
   ActorUseItemServerEvent: ActorUseItemServerEventArgs;
   ActuallyHurtServerEvent: ActuallyHurtServerEventArgs;
   AddEffectServerEvent: AddEffectServerEventArgs;
-  AddEntityClientEvent: AddEntityClientEventArgs;
   AddEntityServerEvent: AddEntityServerEventArgs;
   AddExpEvent: AddExpEventArgs;
   AddLevelEvent: AddLevelEventArgs;
-  AddPlayerAOIClientEvent: AddPlayerAOIClientEventArgs;
-  AddPlayerCreatedClientEvent: AddPlayerCreatedClientEventArgs;
   AddServerPlayerEvent: AddServerPlayerEventArgs;
-  AnvilCreateResultItemAfterClientEvent: AnvilCreateResultItemAfterClientEventArgs;
-  ApproachEntityClientEvent: ApproachEntityClientEventArgs;
-  BlockAnimateRandomTickEvent: BlockAnimateRandomTickEventArgs;
   BlockDestroyByLiquidServerEvent: BlockDestroyByLiquidServerEventArgs;
   BlockLiquidStateChangeAfterServerEvent: BlockLiquidStateChangeAfterServerEventArgs;
   BlockLiquidStateChangeServerEvent: BlockLiquidStateChangeServerEventArgs;
@@ -463,33 +386,22 @@ interface EventNameArgs {
   BlockSnowStateChangeAfterServerEvent: BlockSnowStateChangeAfterServerEventArgs;
   BlockSnowStateChangeServerEvent: BlockSnowStateChangeServerEventArgs;
   BlockStrengthChangedServerEvent: BlockStrengthChangedServerEventArgs;
-  CameraMotionStartClientEvent: CameraMotionStartClientEventArgs;
-  CameraMotionStopClientEvent: CameraMotionStopClientEventArgs;
   ChangeLevelUpCostServerEvent: ChangeLevelUpCostServerEventArgs;
   ChangeSwimStateServerEvent: ChangeSwimStateServerEventArgs;
   ChestBlockTryPairWithServerEvent: ChestBlockTryPairWithServerEventArgs;
-  ChunkAcquireDiscardedClientEvent: ChunkAcquireDiscardedClientEventArgs;
   ChunkAcquireDiscardedServerEvent: ChunkAcquireDiscardedServerEventArgs;
   ChunkGeneratedServerEvent: ChunkGeneratedServerEventArgs;
-  ChunkLoadedClientEvent: ChunkLoadedClientEventArgs;
   ChunkLoadedServerEvent: ChunkLoadedServerEventArgs;
-  ClientBlockUseEvent: ClientBlockUseEventArgs;
-  ClientItemTryUseEvent: ClientItemTryUseEventArgs;
-  ClientItemUseOnEvent: ClientItemUseOnEventArgs;
   ClientLoadAddonsFinishServerEvent: ClientLoadAddonsFinishServerEventArgs;
-  ClientShapedRecipeTriggeredEvent: ClientShapedRecipeTriggeredEventArgs;
   CommandBlockContainerOpenEvent: CommandBlockContainerOpenEventArgs;
   CommandBlockUpdateEvent: CommandBlockUpdateEventArgs;
   CommandEvent: CommandEventArgs;
   ContainerItemChangedServerEvent: ContainerItemChangedServerEventArgs;
   CraftItemOutputChangeServerEvent: CraftItemOutputChangeServerEventArgs;
-  CraftUpdateResultItemClientEvent: CraftUpdateResultItemClientEventArgs;
   CustomCommandTriggerServerEvent: CustomCommandTriggerServerEventArgs;
   DamageEvent: DamageEventArgs;
   DelServerPlayerEvent: DelServerPlayerEventArgs;
   DestroyBlockEvent: DestroyBlockEventArgs;
-  DimensionChangeClientEvent: DimensionChangeClientEventArgs;
-  DimensionChangeFinishClientEvent: DimensionChangeFinishClientEventArgs;
   DimensionChangeFinishServerEvent: DimensionChangeFinishServerEventArgs;
   DimensionChangeServerEvent: DimensionChangeServerEventArgs;
   DirtBlockToGrassBlockServerEvent: DirtBlockToGrassBlockServerEventArgs;
@@ -500,102 +412,70 @@ interface EventNameArgs {
   EntityDroppedItemServerEvent: EntityDroppedItemServerEventArgs;
   EntityEffectDamageServerEvent: EntityEffectDamageServerEventArgs;
   EntityLoadScriptEvent: EntityLoadScriptEventArgs;
-  EntityModelChangedClientEvent: EntityModelChangedClientEventArgs;
   EntityMotionStartServerEvent: EntityMotionStartServerEventArgs;
   EntityMotionStopServerEvent: EntityMotionStopServerEventArgs;
   EntityPickupItemServerEvent: EntityPickupItemServerEventArgs;
   EntityPlaceBlockAfterServerEvent: EntityPlaceBlockAfterServerEventArgs;
   EntityRemoveEvent: EntityRemoveEventArgs;
   EntityStartRidingEvent: EntityStartRidingEventArgs;
-  EntityStopRidingEvent: EntityStopRidingEventArgs;
   EntityTickServerEvent: EntityTickServerEventArgs;
   ExplosionServerEvent: ExplosionServerEventArgs;
-  ExtinguishFireClientEvent: ExtinguishFireClientEventArgs;
   ExtinguishFireServerEvent: ExtinguishFireServerEventArgs;
   FallingBlockBreakServerEvent: FallingBlockBreakServerEventArgs;
-  FallingBlockCauseDamageBeforeClientEvent: FallingBlockCauseDamageBeforeClientEventArgs;
   FallingBlockCauseDamageBeforeServerEvent: FallingBlockCauseDamageBeforeServerEventArgs;
   FallingBlockReturnHeavyBlockServerEvent: FallingBlockReturnHeavyBlockServerEventArgs;
   FarmBlockToDirtBlockServerEvent: FarmBlockToDirtBlockServerEventArgs;
   FurnaceBurnFinishedServerEvent: FurnaceBurnFinishedServerEventArgs;
-  GameRenderTickEvent: GameRenderTickEventArgs;
-  GameTypeChangedClientEvent: GameTypeChangedClientEventArgs;
   GameTypeChangedServerEvent: GameTypeChangedServerEventArgs;
   GlobalCommandServerEvent: GlobalCommandServerEventArgs;
   GrassBlockToDirtBlockServerEvent: GrassBlockToDirtBlockServerEventArgs;
-  GrindStoneRemovedEnchantClientEvent: GrindStoneRemovedEnchantClientEventArgs;
   HealthChangeBeforeServerEvent: HealthChangeBeforeServerEventArgs;
-  HealthChangeClientEvent: HealthChangeClientEventArgs;
   HealthChangeServerEvent: HealthChangeServerEventArgs;
   HeavyBlockStartFallingServerEvent: HeavyBlockStartFallingServerEventArgs;
   HopperTryPullInServerEvent: HopperTryPullInServerEventArgs;
   HopperTryPullOutServerEvent: HopperTryPullOutServerEventArgs;
-  InventoryItemChangedClientEvent: InventoryItemChangedClientEventArgs;
   InventoryItemChangedServerEvent: InventoryItemChangedServerEventArgs;
   ItemDurabilityChangedServerEvent: ItemDurabilityChangedServerEventArgs;
   ItemPullOutCustomContainerServerEvent: ItemPullOutCustomContainerServerEventArgs;
   ItemPushInCustomContainerServerEvent: ItemPushInCustomContainerServerEventArgs;
-  ItemReleaseUsingClientEvent: ItemReleaseUsingClientEventArgs;
   ItemReleaseUsingServerEvent: ItemReleaseUsingServerEventArgs;
   ItemUseAfterServerEvent: ItemUseAfterServerEventArgs;
   ItemUseOnAfterServerEvent: ItemUseOnAfterServerEventArgs;
-  LeaveEntityClientEvent: LeaveEntityClientEventArgs;
-  LiquidClippedClientEvent: LiquidClippedClientEventArgs;
   LiquidClippedServerEvent: LiquidClippedServerEventArgs;
-  LoadClientAddonScriptsAfter: LoadClientAddonScriptsAfterEventArgs;
   LoadServerAddonScriptsAfter: LoadServerAddonScriptsAfterEventArgs;
   MobDieEvent: MobDieEventArgs;
   MobGriefingBlockServerEvent: MobGriefingBlockServerEventArgs;
-  ModBlockEntityLoadedClientEvent: ModBlockEntityLoadedClientEventArgs;
-  ModBlockEntityRemoveClientEvent: ModBlockEntityRemoveClientEventArgs;
-  ModBlockEntityTickClientEvent: ModBlockEntityTickClientEventArgs;
   MountTamingEvent: MountTamingEventArgs;
   NewOnEntityAreaEvent: NewOnEntityAreaEventArgs;
-  OnAfterFallOnBlockClientEvent: OnAfterFallOnBlockClientEventArgs;
   OnAfterFallOnBlockServerEvent: OnAfterFallOnBlockServerEventArgs;
   OnBeforeFallOnBlockServerEvent: OnBeforeFallOnBlockServerEventArgs;
-  OnCarriedNewItemChangedClientEvent: OnCarriedNewItemChangedClientEventArgs;
   OnCarriedNewItemChangedServerEvent: OnCarriedNewItemChangedServerEventArgs;
-  OnCommandOutputClientEvent: OnCommandOutputClientEventArgs;
   OnCommandOutputServerEvent: OnCommandOutputServerEventArgs;
   OnContainerFillLoottableServerEvent: OnContainerFillLoottableServerEventArgs;
-  OnEntityInsideBlockClientEvent: OnEntityInsideBlockClientEventArgs;
   OnEntityInsideBlockServerEvent: OnEntityInsideBlockServerEventArgs;
   OnFireHurtEvent: OnFireHurtEventArgs;
-  OnGroundClientEvent: OnGroundClientEventArgs;
   OnGroundServerEvent: OnGroundServerEventArgs;
   OnItemPutInEnchantingModelServerEvent: OnItemPutInEnchantingModelServerEventArgs;
   OnKnockBackServerEvent: OnKnockBackServerEventArgs;
   OnLightningLevelChangeServerEvent: OnLightningLevelChangeServerEventArgs;
   OnLocalLightningLevelChangeServerEvent: OnLocalLightningLevelChangeServerEventArgs;
-  OnLocalPlayerActionClientEvent: OnLocalPlayerActionClientEventArgs;
-  OnLocalPlayerStartJumpClientEvent: OnLocalPlayerStartJumpClientEventArgs;
-  OnLocalPlayerStopLoading: OnLocalPlayerStopLoadingEventArgs;
   OnLocalRainLevelChangeServerEvent: OnLocalRainLevelChangeServerEventArgs;
   OnMobHitBlockServerEvent: OnMobHitBlockServerEventArgs;
-  OnMobHitMobClientEvent: OnMobHitMobClientEventArgs;
   OnMobHitMobServerEvent: OnMobHitMobServerEventArgs;
-  OnModBlockNeteaseEffectCreatedClientEvent: OnModBlockNeteaseEffectCreatedClientEventArgs;
   OnNewArmorExchangeServerEvent: OnNewArmorExchangeServerEventArgs;
   OnOffhandItemChangedServerEvent: OnOffhandItemChangedServerEventArgs;
   OnPlayerActionServerEvent: OnPlayerActionServerEventArgs;
   OnPlayerActiveShieldServerEvent: OnPlayerActiveShieldServerEventArgs;
   OnPlayerBlockedByShieldAfterServerEvent: OnPlayerBlockedByShieldAfterServerEventArgs;
   OnPlayerBlockedByShieldBeforeServerEvent: OnPlayerBlockedByShieldBeforeServerEventArgs;
-  OnPlayerHitBlockClientEvent: OnPlayerHitBlockClientEventArgs;
   OnPlayerHitBlockServerEvent: OnPlayerHitBlockServerEventArgs;
   OnRainLevelChangeServerEvent: OnRainLevelChangeServerEventArgs;
-  OnScriptTickClient: OnScriptTickClientEventArgs;
   OnScriptTickServer: OnScriptTickServerEventArgs;
-  OnStandOnBlockClientEvent: OnStandOnBlockClientEventArgs;
   OnStandOnBlockServerEvent: OnStandOnBlockServerEventArgs;
-  PerspChangeClientEvent: PerspChangeClientEventArgs;
   PistonActionServerEvent: PistonActionServerEventArgs;
   PlaceNeteaseLargeFeatureServerEvent: PlaceNeteaseLargeFeatureServerEventArgs;
   PlaceNeteaseStructureFeatureEvent: PlaceNeteaseStructureFeatureEventArgs;
-  PlayerAddCustomContainerItemClientEvent: PlayerAddCustomContainerItemClientEventArgs;
   PlayerAddCustomContainerItemServerEvent: PlayerAddCustomContainerItemServerEventArgs;
-  PlayerAttackEntityEvent: PlayerAttackEntityEventArgs;
   PlayerCheatSpinAttackServerEvent: PlayerCheatSpinAttackServerEventArgs;
   PlayerDieEvent: PlayerDieEventArgs;
   PlayerDoInteractServerEvent: PlayerDoInteractServerEventArgs;
@@ -611,10 +491,8 @@ interface EventNameArgs {
   PlayerJoinMessageEvent: PlayerJoinMessageEventArgs;
   PlayerLeftMessageServerEvent: PlayerLeftMessageServerEventArgs;
   PlayerNamedEntityServerEvent: PlayerNamedEntityServerEventArgs;
-  PlayerPermissionChangeClientEvent: PlayerPermissionChangeClientEventArgs;
   PlayerPermissionChangeServerEvent: PlayerPermissionChangeServerEventArgs;
   PlayerPickupArrowServerEvent: PlayerPickupArrowServerEventArgs;
-  PlayerRemoveCustomContainerItemClientEvent: PlayerRemoveCustomContainerItemClientEventArgs;
   PlayerRemoveCustomContainerItemServerEvent: PlayerRemoveCustomContainerItemServerEventArgs;
   PlayerRespawnEvent: PlayerRespawnEventArgs;
   PlayerRespawnFinishServerEvent: PlayerRespawnFinishServerEventArgs;
@@ -623,21 +501,14 @@ interface EventNameArgs {
   PlayerStartFishingServerEvent: PlayerStartFishingServerEventArgs;
   PlayerStopSleepServerEvent: PlayerStopSleepServerEventArgs;
   PlayerTeleportEvent: PlayerTeleportEventArgs;
-  PlayerTryAddCustomContainerItemClientEvent: PlayerTryAddCustomContainerItemClientEventArgs;
   PlayerTryAddCustomContainerItemServerEvent: PlayerTryAddCustomContainerItemServerEventArgs;
-  PlayerTryDestroyBlockClientEvent: PlayerTryDestroyBlockClientEventArgs;
-  PlayerTryDropItemClientEvent: PlayerTryDropItemClientEventArgs;
-  PlayerTryPutCustomContainerItemClientEvent: PlayerTryPutCustomContainerItemClientEventArgs;
   PlayerTryPutCustomContainerItemServerEvent: PlayerTryPutCustomContainerItemServerEventArgs;
-  PlayerTryRemoveCustomContainerItemClientEvent: PlayerTryRemoveCustomContainerItemClientEventArgs;
   PlayerTryRemoveCustomContainerItemServerEvent: PlayerTryRemoveCustomContainerItemServerEventArgs;
   PlayerTrySleepServerEvent: PlayerTrySleepServerEventArgs;
   ProjectileCritHitEvent: ProjectileCritHitEventArgs;
   ProjectileDoHitEffectEvent: ProjectileDoHitEffectEventArgs;
   RefreshEffectServerEvent: RefreshEffectServerEventArgs;
   RemoveEffectServerEvent: RemoveEffectServerEventArgs;
-  RemoveEntityClientEvent: RemoveEntityClientEventArgs;
-  RemovePlayerAOIClientEvent: RemovePlayerAOIClientEventArgs;
   ServerBlockEntityTickEvent: ServerBlockEntityTickEventArgs;
   ServerBlockUseEvent: ServerBlockUseEventArgs;
   ServerChatEvent: ServerChatEventArgs;
@@ -651,24 +522,15 @@ interface EventNameArgs {
   ServerPostBlockPatternEvent: ServerPostBlockPatternEventArgs;
   ServerPreBlockPatternEvent: ServerPreBlockPatternEventArgs;
   ServerSpawnMobEvent: ServerSpawnMobEventArgs;
-  ShearsDestoryBlockBeforeClientEvent: ShearsDestoryBlockBeforeClientEventArgs;
   ShearsDestoryBlockBeforeServerEvent: ShearsDestoryBlockBeforeServerEventArgs;
   ShearsUseToBlockBeforeServerEvent: ShearsUseToBlockBeforeServerEventArgs;
   SpawnProjectileServerEvent: SpawnProjectileServerEventArgs;
-  StartDestroyBlockClientEvent: StartDestroyBlockClientEventArgs;
   StartDestroyBlockServerEvent: StartDestroyBlockServerEventArgs;
-  StartRidingClientEvent: StartRidingClientEventArgs;
   StartRidingServerEvent: StartRidingServerEventArgs;
-  StartUsingItemClientEvent: StartUsingItemClientEventArgs;
-  StepOffBlockClientEvent: StepOffBlockClientEventArgs;
   StepOffBlockServerEvent: StepOffBlockServerEventArgs;
-  StepOnBlockClientEvent: StepOnBlockClientEventArgs;
   StepOnBlockServerEvent: StepOnBlockServerEventArgs;
-  StopUsingItemClientEvent: StopUsingItemClientEventArgs;
   StoreBuySuccServerEvent: StoreBuySuccServerEventArgs;
   UIContainerItemChangedServerEvent: UIContainerItemChangedServerEventArgs;
-  UnLoadClientAddonScriptsBefore: UnLoadClientAddonScriptsBeforeEventArgs;
-  UpdatePlayerSkinClientEvent: UpdatePlayerSkinClientEventArgs;
   WillAddEffectServerEvent: WillAddEffectServerEventArgs;
   WillTeleportToServerEvent: WillTeleportToServerEventArgs;
 }
