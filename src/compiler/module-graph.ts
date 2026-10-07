@@ -40,7 +40,7 @@ export function buildModuleGraph(program: ts.Program, entryFile: ts.SourceFile):
         continue;
       }
       const specifier = statement.moduleSpecifier.text;
-      if (!specifier.startsWith(".")) {
+      if (!specifier.startsWith("hpl-tsc/")) {
         issues.push({ file, node: statement, message: `Runtime package import '${specifier}' cannot be bundled to HPL` });
         continue;
       }

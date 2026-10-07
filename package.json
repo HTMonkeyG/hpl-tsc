@@ -1,6 +1,6 @@
 {
   "name": "hpl-tsc",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "private": true,
   "type": "module",
   "bin": {
@@ -12,7 +12,9 @@
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
-    }
+    },
+    "./libhpl": "./libhpl.d.ts",
+    "./libminecraftne": "./libminecraftne.d.ts"
   },
   "files": [
     "dist",

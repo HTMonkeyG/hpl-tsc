@@ -148,7 +148,7 @@ async function main(): Promise<void> {
     return;
   }
   if (!values.noEmit) {
-    const output = path.resolve(values.outFile ?? `${input.slice(0, -path.extname(input).length)}.hpl`);
+    const output = path.resolve(values.outFile ?? `${input.slice(0, -path.extname(input).length)}.t.hpl`);
     await mkdir(path.dirname(output), { recursive: true });
     await writeFile(output, result.outputText, "utf8");
   }
