@@ -2,7 +2,7 @@ import ts from "typescript";
 import { conventionForType } from "../analysis/type-operations.js";
 import type { HplSemanticType } from "../analysis/types.js";
 import type { LValue, TypedExpression } from "../ir/nodes.js";
-import { stringExpression, symbolLValue } from "../ir/builders.js";
+import { runtimeCall, stringExpression, symbolLValue } from "../ir/builders.js";
 import { RAW_PTR_SUPPORT } from "../catalog/runtime.js";
 import type { LoweringContext } from "./context.js";
 import { getSymbolId, report, semanticType, span } from "./context.js";
@@ -41,12 +41,20 @@ export function lowerLValue(
       report(context, node, 4406, "Only declared interface/object properties are assignable");
       return undefined;
     }
+    const operation = conventionForType(valueType) === "ptr" ? "maps.ptr_set" : "maps.set";
+    let keyExpr: TypedExpression = stringExpression(node.name.text, span(node.name));
+
+    // For maps.ptr_set with object types, wrap the key with object.ref
+    if (operation === "maps.ptr_set" && ownerType.kind === "object") {
+      keyExpr = runtimeCall("object.ref", [keyExpr], { kind: "int" }, span(node.name));
+    }
+
     return {
       kind: "container",
       object: lowerExpression(context, node.expression),
-      key: stringExpression(node.name.text, span(node.name)),
+      key: keyExpr,
       valueType,
-      operation: conventionForType(valueType) === "ptr" ? "maps.ptr_set" : "maps.set",
+      operation,
       span: span(node),
     };
   }
@@ -64,10 +72,18 @@ export function lowerLValue(
       report(context, node, 4407, "Indexed assignment requires a compatible slice, tuple, map, or object");
       return undefined;
     }
+
+    let keyExpr = lowerExpression(context, node.argumentExpression);
+
+    // For maps.ptr_set with object types, wrap the key with object.ref
+    if (operation === "maps.ptr_set" && ownerType.kind === "object") {
+      keyExpr = runtimeCall("object.ref", [keyExpr], { kind: "int" }, span(node.argumentExpression));
+    }
+
     return {
       kind: "container",
       object: lowerExpression(context, node.expression),
-      key: lowerExpression(context, node.argumentExpression),
+      key: keyExpr,
       valueType,
       operation,
       span: span(node),

@@ -114,12 +114,35 @@ export function lowerCall(context: LoweringContext, node: ts.CallExpression): Ty
   if (declaration) return declaration;
   const user = lowerUserCall(context, node);
   if (user) return user;
+
+  // Handle explicit type conversion: String(), Boolean(), Number()
   if (ts.isIdentifier(node.expression) && node.arguments.length === 1) {
     const value = lowerExpression(context, node.arguments[0]!);
     const target = node.expression.text === "String" ? HPL_STR
       : node.expression.text === "Boolean" ? HPL_BOOL
       : node.expression.text === "Number" ? HPL_FLOAT : undefined;
     if (target) return { kind: "typedCast", expression: value, type: target, effect: value.effect, span: span(node) };
+  }
+
+  // Handle hpl.int() and hpl.float() type conversions
+  if (ts.isPropertyAccessExpression(node.expression) && node.arguments.length === 1) {
+    const owner = node.expression.expression;
+    const member = node.expression.name.text;
+    if (ts.isIdentifier(owner) && owner.text === "hpl") {
+      const value = lowerExpression(context, node.arguments[0]!);
+      if (member === "int") {
+        return { kind: "typedCast", expression: value, type: HPL_INT, effect: value.effect, span: span(node) };
+      }
+      if (member === "float") {
+        return { kind: "typedCast", expression: value, type: HPL_FLOAT, effect: value.effect, span: span(node) };
+      }
+      if (member === "str") {
+        return { kind: "typedCast", expression: value, type: HPL_STR, effect: value.effect, span: span(node) };
+      }
+      if (member === "bool") {
+        return { kind: "typedCast", expression: value, type: HPL_BOOL, effect: value.effect, span: span(node) };
+      }
+    }
   }
   if (ts.isPropertyAccessExpression(node.expression)) {
     const owner = node.expression.expression;
@@ -146,7 +169,27 @@ export function lowerCall(context: LoweringContext, node: ts.CallExpression): Ty
         : descriptor?.returnType === "element" ? indexedType(ownerType) ?? semanticType(context, node)
         : descriptor ? descriptorResult(context, node, descriptor.result)
         : semanticType(context, node);
-      return runtimeCall(operation, [lowerExpression(context, owner), ...lowerArguments(context, node.arguments)], resultType, span(node));
+
+      const args = lowerArguments(context, node.arguments);
+
+      // For maps.ptr_* and set.ptr_* operations, wrap the key argument with object.ref
+      // These operations expect a pointer to the key, not the key itself
+      if ((operation.startsWith("maps.ptr_") || operation.startsWith("set.ptr_")) && args.length > 0) {
+        const wrappedArgs = [...args];
+        const keyArg = wrappedArgs[0]!;
+        // Wrap the first argument (the key) with object.ref
+        wrappedArgs[0] = runtimeCall("object.ref", [keyArg], { kind: "int" }, keyArg.span);
+
+        // For maps.ptr_set, also wrap the value argument
+        if (operation === "maps.ptr_set" && wrappedArgs.length > 1) {
+          const valueArg = wrappedArgs[1]!;
+          wrappedArgs[1] = runtimeCall("object.ref", [valueArg], { kind: "int" }, valueArg.span);
+        }
+
+        return runtimeCall(operation, [lowerExpression(context, owner), ...wrappedArgs], resultType, span(node));
+      }
+
+      return runtimeCall(operation, [lowerExpression(context, owner), ...args], resultType, span(node));
     }
   }
   report(context, node, 4503, "Call expression has no supported HPL declaration or mapping");

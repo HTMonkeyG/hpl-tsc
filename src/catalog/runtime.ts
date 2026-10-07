@@ -43,6 +43,11 @@ export const DYNAMIC_API_NAMES = Object.freeze([
   "block.GetContainerSize", "block.GetBlockPoweredState", "block.GetStrength", "block.GetSignBlockText",
   "item.GetAllEnchantsInfo", "item.GetItemDurability", "item.GetItemInfoByBlockName",
   "item.GetItemMaxDurability", "item.SetItemDurability",
+  "object.ref", "object.can_deref", "object.deref", "object.release", "object.pin", "object.finalise",
+  "object.make_none", "object.is_ptr", "object.is_none", "object.raw_type", "object.ref_type",
+  "reflect.cast", "reflect.format", "reflect.length", "reflect.copy", "reflect.deepcopy",
+  "reflect.vars", "reflect.dir", "reflect.hasattr", "reflect.getattr", "reflect.setattr",
+  "reflect.delattr", "reflect.callable", "reflect.call",
 ] as const);
 
 export interface RuntimeCatalog {

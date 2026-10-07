@@ -130,7 +130,17 @@ export function lowerExpression(context: LoweringContext, node: ts.Expression): 
     const ownerType = semanticType(context, node.expression);
     const resultType = semanticType(context, node);
     const operation = indexReadOperation(context, node, ownerType, resultType);
-    if (operation) return runtimeCall(operation, [lowerExpression(context, node.expression), lowerExpression(context, node.argumentExpression)], resultType, span(node), "read");
+    if (operation) {
+      const receiver = lowerExpression(context, node.expression);
+      let keyExpr = lowerExpression(context, node.argumentExpression);
+
+      // For maps.ptr_get/maps.ptr_set with object types, wrap non-primitive keys with object.ref
+      if ((operation === "maps.ptr_get" || operation === "maps.ptr_set") && ownerType.kind === "object") {
+        keyExpr = runtimeCall("object.ref", [keyExpr], { kind: "int" }, span(node.argumentExpression));
+      }
+
+      return runtimeCall(operation, [receiver, keyExpr], resultType, span(node), "read");
+    }
   }
   report(context, node, 4205, `Unsupported expression: ${ts.SyntaxKind[node.kind]}`);
   return intExpression(0, span(node));

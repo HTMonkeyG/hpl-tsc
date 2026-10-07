@@ -86,7 +86,15 @@ export function propertyRead(
   const resultType = propertyType(ownerType, node.name.text);
   if (!resultType) return undefined;
   const operation = indexReadOperation(context, node, ownerType, resultType);
-  return operation ? runtimeCall(operation, [receiver, stringExpression(node.name.text, span(node.name))], resultType, span(node), "read") : undefined;
+  if (!operation) return undefined;
+
+  // For maps.ptr_get and maps.ptr_set, wrap the key with object.ref
+  const keyExpr = stringExpression(node.name.text, span(node.name));
+  const wrappedKey = operation === "maps.ptr_get" || operation === "maps.ptr_set"
+    ? runtimeCall("object.ref", [keyExpr], { kind: "int" }, span(node.name))
+    : keyExpr;
+
+  return runtimeCall(operation, [receiver, wrappedKey], resultType, span(node), "read");
 }
 
 export function constructorOperation(type: HplSemanticType): string | undefined {

@@ -21,6 +21,12 @@ declare namespace hpl {
   function hplFunc(name?: string): HplMethodDecorator;
   function hplEvent(event: string, name?: string): HplMethodDecorator;
 
+  /** Type conversion functions */
+  function int(value: number | string | boolean): int;
+  function float(value: number | string | boolean): float;
+  function str(value: Raw): string;
+  function bool(value: Raw): boolean;
+
   /** @hplIntrinsic ref @hplReturns int */ function ref(type: "int", index: int): int;
   /** @hplIntrinsic ref @hplReturns bool */ function ref(type: "bool", index: int): boolean;
   /** @hplIntrinsic ref @hplReturns float */ function ref(type: "float", index: int): float;
@@ -140,6 +146,34 @@ declare namespace hpl {
     /** @hplFunc compile.get_current_cache_size @hplReturns int */ function getCurrentCacheSize(): int;
     /** @hplFunc compile.set_max_cache_size @hplReturns bool */ function setMaxCacheSize(size: int): boolean;
     /** @hplFunc compile.register_cache @hplReturns bool */ function registerCache(code: string): boolean;
+  }
+  namespace object {
+    /** @hplFunc object.ref @hplReturns pointer */ function ref(value: Raw | HplObject): int;
+    /** @hplFunc object.can_deref @hplReturns bool */ function canDeref(ptr: int): boolean;
+    /** @hplFunc object.deref @hplReturns unknown */ function deref(ptr: int): Raw;
+    /** @hplFunc object.release @hplReturns bool */ function release(ptr: int): boolean;
+    /** @hplFunc object.pin @hplReturns bool */ function pin(ptr: int): boolean;
+    /** @hplFunc object.finalise @hplReturns bool */ function finalise(ptr: int): boolean;
+    /** @hplFunc object.make_none @hplReturns pointer */ function makeNone(): int;
+    /** @hplFunc object.is_ptr @hplReturns bool */ function isPtr(ptr: int): boolean;
+    /** @hplFunc object.is_none @hplReturns bool */ function isNone(ptr: int): boolean;
+    /** @hplFunc object.raw_type @hplReturns int */ function rawType(value: Raw): int;
+    /** @hplFunc object.ref_type @hplReturns int */ function refType(ptr: int): int;
+  }
+  namespace reflect {
+    /** @hplFunc reflect.cast @hplReturns unknown */ function cast(ptr: int): Raw;
+    /** @hplFunc reflect.format @hplReturns str */ function format(ptr: int, accuracy?: int): string;
+    /** @hplFunc reflect.length @hplReturns int */ function length(ptr: int): int;
+    /** @hplFunc reflect.copy @hplReturns pointer */ function copy(ptr: int): int;
+    /** @hplFunc reflect.deepcopy @hplReturns pointer */ function deepcopy(ptr: int): int;
+    /** @hplFunc reflect.vars @hplReturns pointer */ function vars(ptr: int): int;
+    /** @hplFunc reflect.dir @hplReturns pointer */ function dir(ptr: int): int;
+    /** @hplFunc reflect.hasattr @hplReturns bool */ function hasattr(ptr: int, name: string): boolean;
+    /** @hplFunc reflect.getattr @hplReturns unknown */ function getattr(ptr: int, name: string): Raw;
+    /** @hplFunc reflect.setattr @hplReturns bool */ function setattr(ptr: int, name: string, value: Raw): boolean;
+    /** @hplFunc reflect.delattr @hplReturns bool */ function delattr(ptr: int, name: string): boolean;
+    /** @hplFunc reflect.callable @hplReturns bool */ function callable(ptr: int): boolean;
+    /** @hplFunc reflect.call @hplReturns unknown */ function call(ptr: int, args: int): Raw;
   }
   namespace block {
     /** @hplFunc block.GetBlockStates @hplReturns pointer */ function getStates(position: tuple<readonly [float, float, float]>, dimensionId?: int): HplObject;
